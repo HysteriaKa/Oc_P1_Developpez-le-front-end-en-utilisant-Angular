@@ -1,0 +1,15 @@
+<p>Medals per country</p>
+<p>Nombre de pays : {{ (olympics$ | async)?.length }} </p>
+<div>
+	{{datas|json}}
+<ngx-charts-pie-chart
+	[view]="view"
+	[scheme]="colorScheme"
+	[results]="datas"
+	[legend]="showLegend"
+	[explodeSlices]="explodeSlices"
+	[doughnut]="doughnut"
+	[gradient]="gradient"
+	(select)="onSelect($event)">
+  </ngx-charts-pie-chart>
+</div>
