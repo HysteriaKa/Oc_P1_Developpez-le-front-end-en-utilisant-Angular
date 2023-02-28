@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Olympic } from '../models/Olympic';
-import { map,find } from 'rxjs'
+import { map,find,of } from 'rxjs'
 import { Participation } from '../models/Participation';
 
 @Injectable({
@@ -19,12 +19,13 @@ export class OlympicService {
 
 		return this.http.get<Olympic[]>(this.olympicUrl).pipe(
 			tap((value) => this.olympics$.next(value)),
-			catchError((error, caught) => {
-				// TODO: improve error handling
+			catchError((error) => {
+
 				console.error(error);
+
 				// can be useful to end loading state and let the user know something went wrong
 				this.olympics$.next(null);
-				return caught;
+				return of([]);
 			})
 		);
 	}
@@ -32,8 +33,8 @@ export class OlympicService {
 	getOlympics(): Observable<Olympic[]> {
 		return this.olympics$.asObservable();
 	}
-	
-	getOlympicsById(olympicId: number):Observable<Olympic[]>  {
+
+	getOlympicsById(olympicId: number):Observable<Olympic|undefined>  {
 		const olympic$ = this.olympics$.pipe(find(olympic$ => olympic$.Id === olympicId));
 		if (!olympic$) {
 			throw new Error('Olympic not found!');
